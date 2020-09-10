@@ -30,28 +30,33 @@ public class Item : MonoBehaviour
     {
         Debug.Log(shifted + "\n" + hasKey);
     }
-    private void OnTriggerEnter2D(Collider2D trigger) {
-        if (player.tag == "Player" && obj.tag == "key")
-        {
-            hasKey = true;
-            Debug.Log("Key picked up");
-            if (shifted == true) {
-                foreach (GameObject platform in platforms) {
-                    platform.transform.Rotate(0,0,0);
-                }
-            }
-        }
+    private bool OnTriggerEnter2D(Collider2D trigger) {
         if (player.tag == "Player" && obj.tag == "shifter")
         {
-            Debug.Log ("Time to get funky" + " " + shifted);
-                foreach (GameObject platform in platforms) {
-                    platform.transform.Rotate(0,0,10);
+            Debug.Log("Time to get funky" + " " + shifted);
+            foreach (GameObject platform in platforms)
+            {
+                platform.transform.Rotate(0, 0, 10);
+            }
+            return shifted = true;
+        }
+        if (player.tag == "Player" && obj.tag == "key")
+        {
+            Debug.Log("Key picked up");
+            if (shifted == true)
+            {
+                foreach (GameObject platform in platforms)
+                {
+                    platform.transform.Rotate(0, 0, 0);
                 }
             }
+            return hasKey = true;
         }
-    private void OnTriggerExit2D(Collider2D KeyTrigger) {
-        if(obj.tag == "shifter") shifted = true;
-        Destroy (gameObject);
-        if(obj.tag == "key") hasKey = true;
+        else return false;
+        
+    }
+    private bool OnTriggerExit2D(Collider2D KeyTrigger) {
+        if (obj.tag == "shifter" && obj.SetActive(false)) return shifted = true;
+        if (obj.tag == "key" && obj.SetActive(false)) return hasKey = true;
     }
 }
