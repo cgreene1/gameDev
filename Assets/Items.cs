@@ -1,23 +1,32 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
-public class Item : MonoBehaviour
+public class Items : MonoBehaviour
 {
-    public GameObject player;
-    public GameObject obj;
+    public static GameObject player;
+    public GameObject key;
+    public GameObject shifter;
+    public GameObject door;
     //public GameObject trigger;
     //public GameObject platformShift;
     public GameObject[] platforms;
     public LayerMask lm;
     bool hasKey = false;
     bool shifted = false;
+    bool gameOver = false;
+    public static float speed;
     Transform t;
     // Start is called before the first frame update
     void Start()
     {
+        key = GameObject.FindGameObjectWithTag("key");
+        shifter = GameObject.FindGameObjectWithTag("shifter");
+        door = GameObject.FindGameObjectWithTag("lock");
+        speed = Controls.maxSpeed;
         //player =  GameObject.FindGameObjectWithTag("Player");
        // obj =  GetComponent<GameObject>();
         //trigger =  GameObject.FindGameObjectWithTag("trigger");
@@ -28,19 +37,26 @@ public class Item : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(shifted + "\n" + hasKey);
+        if (gameOver == true) {
+            speed = 0f;
+            SceneManager.LoadScene (sceneName: "GameOverScene");
+        }
+        if (key.activeSelf == false) hasKey = true;
+        if (shifter.activeSelf == false) shifted = true;
+        //Debug.Log(shifted + "\n" + hasKey);
     }
-    private bool OnTriggerEnter2D(Collider2D trigger) {
-        if (player.tag == "Player" && obj.tag == "shifter")
+    private void OnTriggerEnter2D(Collider2D trigger) {
+        //shifter logic
+        if (player && shifter)
         {
             Debug.Log("Time to get funky" + " " + shifted);
             foreach (GameObject platform in platforms)
             {
                 platform.transform.Rotate(0, 0, 10);
             }
-            return shifted = true;
         }
-        if (player.tag == "Player" && obj.tag == "key")
+        //key logic
+        if (player && key)
         {
             Debug.Log("Key picked up");
             if (shifted == true)
@@ -50,13 +66,12 @@ public class Item : MonoBehaviour
                     platform.transform.Rotate(0, 0, 0);
                 }
             }
-            return hasKey = true;
         }
-        else return false;
-        
+        if (player && door && hasKey == true) {
+            gameOver = true;
+        }
     }
-    private bool OnTriggerExit2D(Collider2D KeyTrigger) {
-        if (obj.tag == "shifter" && obj.SetActive(false)) return shifted = true;
-        if (obj.tag == "key" && obj.SetActive(false)) return hasKey = true;
+    private void OnTriggerExit2D(Collider2D KeyTrigger) {
+       gameObject.SetActive(false);
     }
 }

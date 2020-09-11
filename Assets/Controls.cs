@@ -1,13 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
 
-public class Ctrls : MonoBehaviour
+public class Controls : MonoBehaviour
 {
-    public float maxSpeed = 5f;
+    public static float maxSpeed = 5f;
     public float jumpHeight = 8f;
     public float gravityScale = 1.5f;
 
@@ -69,6 +70,11 @@ public class Ctrls : MonoBehaviour
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && onGround)
         {
             rigid.velocity = new Vector2(rigid.velocity.x, jumpHeight);
+        }
+
+        //restart
+        if (Input.GetKeyDown(KeyCode.R)) {
+            SceneManager.LoadScene(0);
         }
     }
 
