@@ -36,18 +36,34 @@ public class Items : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D trigger) {
         //key check at door
-        if (gameObject.tag == "lock" && hasKey == false) {
+        if (gameObject.tag == "lock" && hasKey == false)
+        {
             Debug.Log("No Key!");
-        } 
+        }
         //shifter logic
-        else if (gameObject.tag == "shifter") {
+        else if (gameObject.tag == "shifter")
+        {
             Debug.Log("Time to get funky");
             foreach (GameObject platform in platforms)
             {
                 platform.transform.Rotate(0, 0, 10);
             }
+            gameObject.SetActive(false);
+        }
+        else if (gameObject.tag == "key")
+        {
+            Debug.Log("NO MORE FUNK");
+            foreach (GameObject platform in platforms)
+            {
+                platform.transform.Rotate(0, 0, -10);
+            }
+            gameObject.SetActive(false);
+        }
+        else if (gameObject.tag == "lock" && hasKey == true)
+        {
+            SceneManager.LoadScene(sceneName: "GameOverScene");
         }
         //deactivate on entry
-        else gameObject.SetActive(false);
+        gameObject.SetActive(false);
     } 
 }
