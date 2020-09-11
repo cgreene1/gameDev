@@ -14,11 +14,7 @@ public class Items : MonoBehaviour
     //public GameObject trigger;
     //public GameObject platformShift;
     public GameObject[] platforms;
-    public LayerMask lm;
     bool hasKey = false;
-    bool shifted = false;
-    bool gameOver = false;
-    public static float speed;
     Transform t;
     // Start is called before the first frame update
     void Start()
@@ -26,52 +22,32 @@ public class Items : MonoBehaviour
         key = GameObject.FindGameObjectWithTag("key");
         shifter = GameObject.FindGameObjectWithTag("shifter");
         door = GameObject.FindGameObjectWithTag("lock");
-        speed = Controls.maxSpeed;
-        //player =  GameObject.FindGameObjectWithTag("Player");
-       // obj =  GetComponent<GameObject>();
-        //trigger =  GameObject.FindGameObjectWithTag("trigger");
-        //hasKey = false;
         platforms = GameObject.FindGameObjectsWithTag("platformShift"); 
     }
 
     // Update is called once per frame
     void Update()
-    {
-        if (gameOver == true) {
-            speed = 0f;
+    {   //end level function
+        if (door.activeSelf == false && hasKey == true) {
             SceneManager.LoadScene (sceneName: "GameOverScene");
         }
+        //key check
         if (key.activeSelf == false) hasKey = true;
-        if (shifter.activeSelf == false) shifted = true;
-        //Debug.Log(shifted + "\n" + hasKey);
     }
     private void OnTriggerEnter2D(Collider2D trigger) {
+        //key check at door
+        if (gameObject.tag == "lock" && hasKey == false) {
+            Debug.Log("No Key!");
+        } 
         //shifter logic
-        if (player && shifter)
-        {
-            Debug.Log("Time to get funky" + " " + shifted);
+        else if (gameObject.tag == "shifter") {
+            Debug.Log("Time to get funky");
             foreach (GameObject platform in platforms)
             {
                 platform.transform.Rotate(0, 0, 10);
             }
         }
-        //key logic
-        if (player && key)
-        {
-            Debug.Log("Key picked up");
-            if (shifted == true)
-            {
-                foreach (GameObject platform in platforms)
-                {
-                    platform.transform.Rotate(0, 0, 0);
-                }
-            }
-        }
-        if (player && door && hasKey == true) {
-            gameOver = true;
-        }
-    }
-    private void OnTriggerExit2D(Collider2D KeyTrigger) {
-       gameObject.SetActive(false);
-    }
+        //deactivate on entry
+        else gameObject.SetActive(false);
+    } 
 }

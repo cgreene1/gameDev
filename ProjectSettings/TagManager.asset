@@ -8,6 +8,8 @@ TagManager:
   - shifter
   - key
   - platformShift
+  - lock
+  - Enemy
   layers:
   - Default
   - TransparentFX
